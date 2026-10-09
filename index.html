@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+<title>Raha College Images</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; width: 100%; }
+  html { scroll-behavior: smooth; }
+  body { background: #fff; overflow-x: hidden; }
+  .gallery { width: 100%; }
+  .gallery img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+    background: #fff;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+  }
+  .leaf {
+    position: fixed;
+    z-index: 5;
+    top: -12vh;
+    left: var(--x);
+    font-size: var(--size);
+    line-height: 1;
+    pointer-events: none;
+    opacity: 0;
+    animation: leafFall var(--duration) linear forwards;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,.06));
+  }
+  @keyframes leafFall {
+    0% { transform: translate3d(0,-5vh,0) rotate(0deg); opacity: 0; }
+    6% { opacity: .85; }
+    50% { transform: translate3d(var(--drift),55vh,0) rotate(150deg); opacity: .85; }
+    94% { opacity: .8; }
+    100% { transform: translate3d(calc(var(--drift) * -.35),115vh,0) rotate(330deg); opacity: 0; }
+  }
+  .heart-burst { position: fixed; z-index: 10; left: var(--cx); top: var(--cy); width: 0; height: 0; pointer-events: none; }
+  .heart {
+    position: absolute; left: 0; top: 0; font-size: var(--hs); opacity: 0;
+    animation: heartOut 2.4s cubic-bezier(.15,.7,.25,1) forwards;
+    filter: drop-shadow(0 2px 3px rgba(150,20,65,.12));
+  }
+  @keyframes heartOut {
+    0% { transform: translate(-50%,-50%) scale(.3); opacity: 0; }
+    12% { opacity: 1; }
+    75% { opacity: .95; }
+    100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.05) rotate(var(--rot)); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+<main class="gallery">
+  <img src="https://i.ibb.co/6R1HBysq/Raha-College-1.jpg" alt="" fetchpriority="high">
+  <img src="https://i.ibb.co/6R1HBysq/Raha-College-1.jpg" alt="" loading="lazy">
+  <img src="https://i.ibb.co/6R1HBysq/Raha-College-1.jpg" alt="" loading="lazy">
+  <img src="https://i.ibb.co/6R1HBysq/Raha-College-1.jpg" alt="" loading="lazy">
+  <img src="https://i.ibb.co/6R1HBysq/Raha-College-1.jpg" alt="" loading="lazy">
+  <img src="https://i.ibb.co/6R1HBysq/Raha-College-1.jpg" alt="" loading="lazy">
+</main>
+<script>
+(() => {
+  const nature = ["☘️","🌿","🌳","🍀","🥬","🌿","🍏","🥦","🌱","🎄","🪴"];
+  const hearts = ["❣️","❤️‍🩹","💝","💕","💖","💞","💗","💘"];
+
+  // Keep exactly five nature stickers falling at a time, continuously.
+  function makeLeaf() {
+    const el = document.createElement("span");
+    el.className = "leaf";
+    el.textContent = nature[Math.floor(Math.random() * nature.length)];
+    el.style.setProperty("--x", (Math.random() * 98) + "vw");
+    el.style.setProperty("--size", (20 + Math.random() * 15) + "px");
+    el.style.setProperty("--duration", (18 + Math.random() * 10) + "s");
+    el.style.setProperty("--drift", ((Math.random() * 120) - 60) + "px");
+    document.body.appendChild(el);
+    el.addEventListener("animationend", () => {
+      el.remove();
+      makeLeaf();
+    }, { once: true });
+  }
+  for (let i = 0; i < 5; i++) {
+    setTimeout(makeLeaf, i * 1800);
+  }
+
+  function heartBurst(x, y) {
+    const burst = document.createElement("div");
+    burst.className = "heart-burst";
+    burst.style.setProperty("--cx", x + "px");
+    burst.style.setProperty("--cy", y + "px");
+    document.body.appendChild(burst);
+    for (let i = 0; i < 8; i++) {
+      const h = document.createElement("span");
+      h.className = "heart";
+      h.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+      const angle = (Math.PI * 2 * i / 8) - Math.PI / 2;
+      const radius = 65 + Math.random() * 35;
+      h.style.setProperty("--dx", (Math.cos(angle) * radius) + "px");
+      h.style.setProperty("--dy", (Math.sin(angle) * radius) + "px");
+      h.style.setProperty("--hs", (18 + Math.random() * 12) + "px");
+      h.style.setProperty("--rot", ((Math.random() * 50) - 25) + "deg");
+      h.style.setProperty("--delay", (Math.random() * .2) + "s");
+      burst.appendChild(h);
+    }
+    setTimeout(() => burst.remove(), 3000);
+  }
+
+  document.addEventListener("pointerdown", (event) => {
+    if (event.button !== undefined && event.button !== 0) return;
+    heartBurst(event.clientX, event.clientY);
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
